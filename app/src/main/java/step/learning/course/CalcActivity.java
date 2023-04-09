@@ -70,6 +70,8 @@ public class CalcActivity extends AppCompatActivity {
         Log.d("CalcActivity", "onSaveInstanceState");
         savingState.putCharSequence("history", tvHistory.getText());
         savingState.putCharSequence("result", tvResult.getText());
+        savingState.putCharSequence("needClear", String.valueOf(needClear));
+        savingState.putCharSequence("commaAdded", String.valueOf(commaAdded));
     }
 
     @Override
@@ -78,6 +80,8 @@ public class CalcActivity extends AppCompatActivity {
         Log.d("CalcActivity", "onRestoreInstanceState");
         tvHistory.setText(savedState.getCharSequence("history"));
         tvResult.setText(savedState.getCharSequence("result"));
+        needClear = Boolean.parseBoolean(savedState.getCharSequence("needClear").toString());
+        commaAdded = Boolean.parseBoolean(savedState.getCharSequence("commaAdded").toString());
     }
 
     private void squareClick(View view ) {

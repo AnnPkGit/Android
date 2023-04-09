@@ -21,8 +21,11 @@ public class CalcActivity extends AppCompatActivity {
     private String minusSign ;
     private String zeroSymbol ;
     private String commaSymbol ;
-    private boolean needClear ;  // необходимо очистить экран при вводе новой цифры
 
+    private String multiplySymbol ;
+
+    private String divideSymbol ;
+    private boolean needClear ;  // необходимо очистить экран при вводе новой цифры
     private boolean commaAdded;
 
     @Override
@@ -33,6 +36,8 @@ public class CalcActivity extends AppCompatActivity {
         minusSign = getString( R.string.calc_minus_sign ) ;
         zeroSymbol = getString( R.string.calc_btn_0_text ) ;
         commaSymbol = getString( R.string.calc_btn_comma_text ) ;
+        multiplySymbol = getString( R.string.calc_btn_multiplication_text ) ;
+        divideSymbol = getString( R.string.calc_btn_divide_text) ;
 
         tvHistory = findViewById( R.id.tv_history ) ;
         tvResult = findViewById( R.id.tv_result ) ;
@@ -55,6 +60,7 @@ public class CalcActivity extends AppCompatActivity {
         findViewById( R.id.calc_btn_ce ).setOnClickListener( this::clearEditClick ) ;
         findViewById( R.id.calc_btn_square ).setOnClickListener( this::squareClick ) ;
         findViewById( R.id.calc_btn_comma ).setOnClickListener( this::commaClick ) ;
+        findViewById( R.id.calc_btn_inverse ).setOnClickListener( this::inverseClick ) ;
 
     }
 
@@ -96,16 +102,9 @@ public class CalcActivity extends AppCompatActivity {
         arg *= arg ;
         displayResult( arg ) ;
         needClear = true ;
-        /*
-        Д.З. После вычисления результата операции "квадрат" при нажатии "backspace"
-        должен полностью очищаться экран и история.
-        При начале ввода (после операции) также должна стираться история.
-        Реализовать операцию 1/x (инверсию)
-        */
     }
     private void clearClick( View view ) {  // C
-        tvHistory.setText( "" ) ;
-        displayResult( "" ) ;
+        Clear();
     }
     private void clearEditClick( View view ) {  // CE
         displayResult( "" ) ;
@@ -125,13 +124,16 @@ public class CalcActivity extends AppCompatActivity {
         displayResult( result ) ;
     }
     private void backspaceClick( View view ) {
-        String result = tvResult.getText().toString() ;
-
-        if(result.endsWith(commaSymbol)) {
-            commaAdded = false;
+        if(needClear) {
+            Clear();
+            return;
         }
 
-        result = result.substring( 0, result.length() - 1 ) ;
+        String result = tvResult.getText().toString() ;
+        if (result.endsWith(commaSymbol)) {
+            commaAdded = false;
+        }
+        result = result.substring(0, result.length() - 1);
         displayResult( result ) ;
     }
     private void digitClick( View view ) {
@@ -161,6 +163,17 @@ public class CalcActivity extends AppCompatActivity {
         commaAdded = true;
     }
 
+    private void inverseClick( View view ) {
+        String result = tvResult.getText().toString() ;
+        if(result.equals(zeroSymbol)) {
+            result = 1 + divideSymbol;
+        }
+        else {
+            result += multiplySymbol + 1 + divideSymbol;
+        }
+        displayResult(result);
+    }
+
     private void displayResult( String result ) {
         if( "".equals( result ) || minusSign.equals( result ) ) {
             result = zeroSymbol ;
@@ -184,6 +197,11 @@ public class CalcActivity extends AppCompatActivity {
         resultString = resultString.replaceAll(commaSymbol, "")
                 .replaceAll(minusSign, "");
         return resultString.length();
+    }
+
+    private void Clear() {
+        tvHistory.setText( "" ) ;
+        displayResult( "" ) ;
     }
 }
 /*
